@@ -1,18 +1,21 @@
-
 {% extends "base.html" %}
 
 {% block content %}
-
+<hr />
 <h1>Add new post</h1>
-<form method='post'>
+<form method='POST'>
     <label>
-        Title:
-        <input type="text" name='post-title' />
+        Title:<br />
+        <input type="text" name='post_title' value="{{post_title}}"/>
+        <p class='error'>{{error_post_title}}</p>
     </label>
+    <br />
     <label>
-        Content:
-        <input type="text" name='post-body' />
+        Content:<br />
+        <textarea name='post_body' value="{{post_body}}"></textarea>
+        <p class='error'>{{error_post_body}}</p>
         </label>
+        <br />
     <input type="submit" value='Post' />
 </form>
 

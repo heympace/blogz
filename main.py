@@ -19,22 +19,57 @@ class Blog(db.Model):
         self.body = body
         self.archived = False
 
+# check for content to validate
+def empty_string(response):
+    if response == "":
+        return True
+
 @app.route('/blog', methods=['POST', 'GET'])
 def index():
-
-    if request.method == 'POST':
-        post_title = request.form['post_title']
-        post_body = request.form['post_body']
-        archived = False
-        new_post = Blog(post_title, post_body, archived)
-        db.session.add(new_post)
-        db.session.commit()
-
 
     posts = Blog.query.filter_by(archived=False).all()
     # archived = Blog.query.filter_by(completed=True).all()
     
     return render_template('blog.html',title="My Blog", 
+        posts=posts)
+
+@app.route('/newpost', methods=['POST', 'GET'])
+def addPost():
+
+    if request.method == 'POST':
+        post_title = request.form['post_title']
+        post_body = request.form['post_body']
+        archived = False
+
+        # error placeholders
+        error_post_title = ''
+        error_post_body = ''
+
+        if empty_string(post_title):
+            error_post_title = 'Title required'
+
+        if empty_string(post_body):
+            error_post_body = 'Content required'
+
+        if not error_post_title and not error_post_body:
+            new_post = Blog(post_title, post_body, archived)
+            db.session.add(new_post)
+            db.session.commit()
+
+            posts = Blog.query.filter_by(archived=False).all()
+            return redirect('/blog')
+
+        else:
+            return render_template('/newpost.html',
+                post_title=post_title,
+                post_body=post_body,
+                error_post_title=error_post_title,
+                error_post_body=error_post_body)
+
+    posts = Blog.query.filter_by(archived=False).all()
+    # archived = Blog.query.filter_by(completed=True).all()
+    
+    return render_template('newpost.html',title="My Blog", 
         posts=posts)
 
 if __name__ == '__main__':
