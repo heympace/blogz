@@ -26,12 +26,23 @@ def empty_string(response):
 
 @app.route('/blog', methods=['POST', 'GET'])
 def index():
+    # get first, assign to variable, 
+    post_id = request.args.get('id') # connects from redirect in line 72
 
-    posts = Blog.query.filter_by(archived=False).all()
-    # archived = Blog.query.filter_by(completed=True).all()
+    if post_id is None:
+        posts = Blog.query.filter_by(archived=False).all()
+        # archived = Blog.query.filter_by(completed=True).all()
     
-    return render_template('blog.html',title="My Blog", 
-        posts=posts)
+        return render_template('blog.html',title="My Blog", 
+            posts=posts)
+    else:
+        post = Blog.query.get(post_id)
+        return render_template('post.html', 
+            post_id=post_id, 
+            post_title=post.title, 
+            post_body=post.body
+        )
+
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def addPost():
@@ -53,11 +64,12 @@ def addPost():
 
         if not error_post_title and not error_post_body:
             new_post = Blog(post_title, post_body, archived)
+
             db.session.add(new_post)
             db.session.commit()
 
             posts = Blog.query.filter_by(archived=False).all()
-            return redirect('/blog')
+            return redirect('/blog?id={0}'.format(new_post.id))
 
         else:
             return render_template('/newpost.html',
