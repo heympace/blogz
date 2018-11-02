@@ -13,7 +13,9 @@
 
     <ul>
         {% for post in posts %}
-        <li><h4>{{post.title}}</h4>
+        <li><a href="?id={{post.id}}">
+            <h4>{{post.title}}</h4>
+            </a>
             <p>{{post.body}}</p>
 
         </li>
