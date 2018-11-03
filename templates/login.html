@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Log In to Feed</h1>
+<p>If you don't have an account, <a href="/signup">register here.</a></p>
+<form action='/login' method='POST'>
+    <table>
+        <tbody>
+            <tr>
+                <td vAlign="top">
+                    <label for="username">Username</label>
+                </td>
+                <td>
+                    <input type="username" name="username" value='{{username}}'/>
+                </td>
+            </tr>   
+            <tr>
+                <td vAlign="top">
+                    <label for="password">Password</label>
+                </td>
+                <td>
+                    <input type="password" name="password" value=''/>
+                </td>
+            </tr>     
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Submit"/>
+                </td>
+            </tr>           
+        </tbody>
+    </table>
+</form>
+
+{% endblock %}
