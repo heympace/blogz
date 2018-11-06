@@ -1,0 +1,26 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<hr />
+<h1>The User List</h1>
+
+{% if users|length == 0 %}
+<p>No users exist. Wow. That&rsquo;s sad. </p>
+{% else %}
+
+    <ul>
+        {% for user in users %}
+        <li><a href="?id={{user.id}}">
+            <h4>{{user.username}}</h4>
+            </a>
+
+        </li>
+        {% endfor %}
+    </ul>
+
+{% endif %}
+
+{% endblock %}
