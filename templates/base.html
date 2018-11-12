@@ -6,13 +6,19 @@
     <style>
         * { font-family: Arial, Helvetica, sans-serif }
         .error { color: red; }
+        .nav {width: 49%; display: inline-block;}
+        .nav-right {text-align: right;}
     </style>
 <body>
-    <a href="/">Home</a>  | 
-    <a href="/login">Login</a> |  
-    <a href="/blog">Feed</a> | 
-    <a href="/newpost">New post</a> | 
-    <a href="/logout">Logout</a>
+    <div class="nav nav-left">
+        <a href="/">home</a>  | 
+        <a href="/blog">all posts</a> | 
+        <a href="/newpost">new post</a> 
+    </div>
+    <div class="nav nav-right">
+        <a href="/login">Login</a> |  
+        <a href="/logout">Logout</a>
+    </div>
 
     {% with messages = get_flashed_messages(with_categories=True) %}
     <ul>
