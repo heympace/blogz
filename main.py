@@ -46,7 +46,7 @@ class User(db.Model):
 def require_login():
 
     # need to whitelist pages user can see
-    allowed_routes = ['login', 'list_users', 'list_blog', 'index', 'signup']
+    allowed_routes = ['login', 'list_users', 'list_blogs', 'index', 'signup']
 
     # if endpoint isn't in allowed routes and no email...
     if request.endpoint not in allowed_routes and 'username' not in session:
@@ -69,27 +69,23 @@ def under_three_chars(response):
 
 @app.route('/', methods=['POST', 'GET'])
 def list_users():
-    users = User.query.all()
-    return render_template('index.html', users=users)
-    # get first, assign to variable, 
-    # user_id = request.args.get('id') 
-    # members = User.query.filter_by(username=username).all()
 
-    #if user_id is None:
-    #    users = User.query.filter_by(id=id).all()
+    user_id = request.args.get('user')
 
-        # archived = Blog.query.filter_by(completed=True).all()
-    
-    #    return render_template('index.html',title="User List", 
-    #        users=users)
-    #else:
-    #    user = Blog.query.get(user_id)
-    #    return render_template('post.html', 
-    #        post_id=post_id, 
-    #        post_title=post.title, 
-    #        post_body=post.body
-    #    )
+    # filters posts of active user logged in session:
+    #owner = User.query.filter_by(username=session['username']).first()
 
+    if user_id is None:
+        users = User.query.all()
+        return render_template('index.html', users=users)
+
+    if user_id:
+        user = User.query.get(user_id)
+        posts = Blog.query.filter_by(archived=False, owner_id=user.id).all()
+        
+        return render_template('user.html',
+            posts=posts
+        )
 
 #########################
 ###     LOGIN
@@ -187,21 +183,33 @@ def signup():
 def list_blogs():
     # get first, assign to variable, 
     post_id = request.args.get('id') 
-    owner = User.query.filter_by(username=session['username']).first()
+    user_id = request.args.get('user')
 
-    if post_id is None:
-        posts = Blog.query.filter_by(archived=False, owner=owner).all()
-        # archived = Blog.query.filter_by(completed=True).all()
-    
-        return render_template('blog.html',title="My Blog", 
-            posts=posts)
-    else:
+    # filters posts of active user logged in session:
+    #owner = User.query.filter_by(username=session['username']).first()
+
+    if post_id:
         post = Blog.query.get(post_id)
+        
         return render_template('post.html', 
-            post_id=post_id, 
-            post_title=post.title, 
-            post_body=post.body
+            post=post
         )
+    
+    else:
+        if user_id:
+            user = User.query.get(user_id)
+            posts = Blog.query.filter_by(archived=False, owner_id=user.id).all()
+            
+            return render_template('user.html',
+                posts=posts
+            )
+
+        else:       # show blog feed - all posts
+            posts = Blog.query.filter_by(archived=False).all()
+            return render_template('blog.html',title="Feeding Time", 
+                posts=posts)
+
+
 
 #########################
 ###     NEW POST
