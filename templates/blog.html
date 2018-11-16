@@ -17,6 +17,7 @@
             <h4>{{post.title}}</h4>
             </a>
             <p>{{post.body}}</p>
+            <p class="byline">Written by <a href="/?user={{post.owner.id}}">{{post.owner.username}}</a></p>
 
         </li>
         {% endfor %}
